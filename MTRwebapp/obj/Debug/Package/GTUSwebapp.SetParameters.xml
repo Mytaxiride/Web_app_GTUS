@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="Default Web Site/" />
+  <setParameter name="DefaultConnection-Web.config Connection String" value="SERVER=gettaxiusa.cluster-cyn0a99nbqyy.us-east-1.rds.amazonaws.com;DATABASE=gtus_db;UID=Desktop_user;Convert Zero Datetime=True;Password=2jM2ycmnJWf5Zg8A;Allow Zero Datetime=true;" />
+</parameters>

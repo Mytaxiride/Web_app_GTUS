@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="DefaultConnection-Web.config Connection String" description="DefaultConnection Connection String used in web.config by the application to access the database." defaultValue="SERVER=gettaxiusa.cluster-cyn0a99nbqyy.us-east-1.rds.amazonaws.com;DATABASE=gtus_db;UID=Desktop_user;Convert Zero Datetime=True;Password=2jM2ycmnJWf5Zg8A;Allow Zero Datetime=true;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\SMIT\\Desktop\\Last\ Backups\ Miguel\\MTR_Backup\\MTR_Backup\\repos\\MTRwebapp\\MTRwebapp\\obj\\Debug\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
+  </parameter>
+</parameters>

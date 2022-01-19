@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="Default Web Site/" />
+  <setParameter name="DefaultConnection-Web.config Connection String" value="          SERVER=mytaxiridedb-cluster.cluster-cl10a4pixt7e.us-east-1.rds.amazonaws.com;          DATABASE=mytaxi_db;          UID=Desktop_user;          Convert Zero Datetime=True;          Password=qX&amp;zrqW21;          Allow Zero Datetime=true;" />
+</parameters>

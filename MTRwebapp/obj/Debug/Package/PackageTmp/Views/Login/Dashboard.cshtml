@@ -1,0 +1,806 @@
+﻿@model MTRwebapp.Models.CustomModels.JobDetail
+@{
+    ViewBag.Title = "Dashboard";
+    if (Session["Username"] == null)
+    {
+        Response.Redirect("~/Login");
+    }
+
+    List<MTRwebapp.Models.CustomModels.DriverLocation> driverlocation = (List<MTRwebapp.Models.CustomModels.DriverLocation>)TempData["Track"];
+}
+@*<link href="/bootstrap/css/style.css" rel="stylesheet" />*@
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link href="~/Content/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+<style>
+    .col-1 {
+        flex: 0 0 3.333333%;
+        max-width: 3.333333%;
+    }
+
+    body, h1, h2, h3, h4, h5, h6, p, ul, li {
+        line-height: 1.3em
+    }
+
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 10px 10px;
+            transition: 0.3s;
+            font-size: 17px;
+            width: 100%;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+                background-color: #19a5e2;
+            }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 10px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+</style>
+<!-- Menu Header Section Start -->
+
+<header>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class=" logo">
+                @*<a><img src="https://webapp-mytaxiride-com.s3.amazonaws.com/images/logo.png" /></a>*@
+                <a><img src="~/Content/images/logo.png" /></a>
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link">Driver</a>
+                    </li>
+
+                    @*<li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                DriverList
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                @foreach (var item in data)
+                                {
+                                    <a class="dropdown-item" value="@item.id" onclick="test(@item.id)">@item.name</a>
+                                }
+                            </div>
+                        </li>*@
+
+                    @*<li class="nav-item">
+                            <a class="nav-link">Places</a>
+                        </li>*@
+                    <li class="nav-item">
+                        <a class="nav-link">@Session["Username"]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Login/LogOut">LogOut</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<section>
+    <div class="row">
+        <div class="col-8 col-sm-9 col-md-10">
+            <section class="map_sec">
+                <div id="map" style="width: 100%; height: 887px; margin-bottom: 2px; "></div>
+            </section>
+            <div class="fixed-bottom" id="bfoot" style="display:none;">
+
+                <div class="progress" style="margin-bottom:10px;height: 0.5rem;" id="outerPB">
+                    <div id="progressbar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; height:100%; overflow: visible;"></div>
+                </div>
+                @*<div class="container" style="margin-top:10px">*@
+                <div class="row button-container" style="margin-left:20px;">
+                    <div class="col-1 f_icon" id="toggle">
+                        <i class="fa fa-pause" id="play"></i>
+                    </div>
+                    <div class="col-1 f_icon">
+                        <i class="fa fa-repeat" onclick="repeat();"></i>
+                    </div>
+                    <label id="timestatus" style="color:#fff"></label>
+
+
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#29AAE3" type="button" value="1">1x</button>
+                    </div>
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#fff" type="button" value="2">2x</button>
+                    </div>
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#fff" type="button" value="3">3x</button>
+                    </div>
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#fff" type="button" value="4">4x</button>
+                    </div>
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#fff" type="button" value="5">5x</button>
+                    </div>
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#fff" type="button" value="6">6x</button>
+                    </div>
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#fff" type="button" value="7">7x</button>
+                    </div>
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#fff" type="button" value="8">8x</button>
+                    </div>
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#fff" type="button" value="9">9x</button>
+                    </div>
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#fff" type="button" value="10">10x</button>
+                    </div>
+                    <label id="actualtimestatus" style="color:#fff;margin-left:10px;"></label>
+                </div>
+                @*</div>*@
+            </div>
+        </div>
+
+        <div class="col-4 col-sm-3 col-md-2">
+            <div class="right_bar">
+                <h3 class="job_dtl">Job Detail</h3>
+                <div class="tab">
+                    <div class="row">
+                        <div class="col-sm-6" style="padding-right:0px">
+                            <button class="tablinks active" onclick="Filter(event,'Job')">JobId</button>
+                        </div>
+                        <div class="col-sm-6" style="padding-left:0px">
+                            <button class="tablinks" onclick="Filter(event,'Time')">Time</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="Time" class="tabcontent">
+                    @using (Ajax.BeginForm("TimeBasedDetail", "Login",
+                                       new AjaxOptions
+                                       {
+                                           OnSuccess = "TrackOnSuccess",
+                                           OnFailure = "TrackOnFailure",
+
+                                       }, new { enctype = "multipart/form-data" }))
+                    {
+                        <form id="form1">
+                            <div class="form-group">
+                                <label>
+                                    Driver Id:
+                                    <input type="text" class="form-control" id="driverno" name="driverno" aria-describedby="emailHelp" placeholder="Enter Driver Id" required>
+                                </label>
+                                <label>
+                                    Job from:
+                                    <input type="text" class="form-control" id="date-format" name="timefrom" aria-describedby="emailHelp" placeholder="Enter time from" required>
+                                </label>
+                                <label>
+                                    Job to:
+                                    <input type="text" class="form-control" id="date-format-d" name="timeto" aria-describedby="emailHelp" placeholder="Enter time to" required>
+                                </label>
+                                <button type="submit" class="btn track_btn" id="track1">Track</button>
+                            </div>
+                        </form>
+                    }
+                </div>
+                <div id="Job" class="tabcontent" style="display:block">
+                    @using (Ajax.BeginForm("JobDetail", "Login",
+                                        new AjaxOptions
+                                        {
+                                            OnSuccess = "OnSuccess",
+                                            OnFailure = "OnFailure",
+
+                                        }, new { enctype = "multipart/form-data" }))
+                    {
+                        <form id="form2">
+                            <div class="form-group">
+                                <label>
+                                    Job id:
+                                    <input type="text" class="form-control" id="jobid" name="Jobid" aria-describedby="emailHelp" placeholder="Enter jobid" required>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn track_btn" id="track2">Track</button>
+                        </form>
+                        <div id="jobdata" style="display:none; margin-top:20px;">
+                            <label>Driver #:<input class="form-control" type="text" name="id" id="id" readonly></label>
+                            <label>Pickup time:<input class="form-control" type="text" name="start" id="start" readonly></label>
+                            <label>Dropoff time:<input class="form-control" type="text" name="end" id="end" readonly></label>
+                            <label>Time Taken:<input class="form-control" type="text" name="timetaken" id="timetaken" readonly></label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+<!-- Menu Header Section Start -->
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.slim.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+@*<script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>*@
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/moment.js"></script>
+<script src="~/Scripts/moment-timezone-with-data-2012-2022.js"></script>
+<script src="~/Scripts/bootstrap-material-datetimepicker.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2MZzFI6Z32E52Sj4fQYcAVHWmc4--g30&libraries=places"></script>
+@*</body>
+    </html>*@
+
+<script>
+
+
+    $(document).ready(function () {
+        $('#toggle').bind("click", function () {
+            $("i", this).toggleClass("fa fa-pause fa fa-play");
+
+            if ($("i", this).attr("class") == "fa fa-play") {
+                stop();
+            }
+            else {
+                if (status == "0") {
+                    MoveDriver(driverstep);
+                } else {
+                    MoveDriverT(driverstep);
+                }
+
+            }
+        });
+    });
+
+    //$(".col-1 f_icon").find("button").val("hide it")
+
+    $(".button-container").find("button").click(function () {
+        var fired_button = $(this).val();
+        $(".button-container").find("button").css('background-color', '#fff')
+        $(this).css('background-color', '#19a5e2')
+        //alert(fired_button);
+        playspeed = 1000 / parseInt(fired_button);
+        stop();
+        if (status == "0") {
+            MoveDriver(driverstep);
+        } else {
+            MoveDriverT(driverstep);
+        }
+    });
+
+    //$("button").click(function () {
+    //    var fired_button = $(this).val();
+    //    alert(fired_button);
+    //});
+
+
+
+    function Filter(evt, filterName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(filterName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+
+
+    function test(id) {
+        alert(id);
+    }
+
+    //$(document).ready(function () {
+    //    $('.fixed-bottom .f_icon i').on('click', function () {
+    //        $(this).toggleClass('open');
+    //    });
+    //});
+
+    $('#date-format-d').bootstrapMaterialDatePicker({ weekStart: 0, format: 'YYYY-MM-DD HH:mm' });
+    $('#date-format').bootstrapMaterialDatePicker({ weekStart: 0, format: 'YYYY-MM-DD HH:mm' }).on('change', function (e, date) {
+        $('#date-format-d').bootstrapMaterialDatePicker('setMinDate', date, { format: 'YYYY-MM-DD HH:mm' });
+    });
+
+
+    //$("#play").click(function () {
+    //    $(this).toggleClass("change");
+    //});
+
+
+    //    var play = document.getElementById("play");
+    //$("#play").click(function () {
+    //    $("#play").addClass("change");
+    //    // $(".tab").addClass("active"); // instead of this do the below
+    //   // $(this).addClass("active");
+    //});
+
+    //play.addEventListener("click", function () {
+
+    //    play.style.color = "#66c144";
+    //});
+    //play.addEventListener("click", function () {
+
+    //    this.style.color = "#66c144";
+    //    this.style.fontSize = '3rem';
+    //    this.classList.toggle('fa-spin');
+    //    this.style.transition = 'color 1.5s ease 1.25s, font-size 0.75s ease-out';
+    //}, false);
+
+
+    var map;
+    var marker;
+    var markers = [];
+    var i;
+    var flightPath;
+    // for  setting the filters
+    var status;
+    var driverid;
+    $(document).ready(function () {
+        myMap();
+    });
+
+    function myMap() {
+        var mapOptions = {
+            center: new google.maps.LatLng(40.7128, -74.0060),
+            zoom: 18,
+            mapTypeId: google.maps.MapTypeId.roadmap,
+            gestureHandling: 'greedy'
+        }
+        map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        map.setOptions({ minZoom: 5, maxZoom: 30 });
+    }
+
+    function clearOverlays() {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+        markers = [];
+        if (flightPath != null && map != null)
+            flightPath.setMap(null);
+    }
+
+    function setMapOnAll(map) {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(map);
+        }
+    }
+
+    // Removes the markers from the map, but keeps them in the array.
+    function clearMarkers() {
+        setMapOnAll(null);
+        if (flightPath != null && map != null)
+            flightPath.setMap(null);
+        if (drivermarker != null && map != null)
+            drivermarker.setMap(null);
+
+    }
+
+    var drivermarker;
+    var driverlocation;
+    var Track;
+
+    var pinImagePassenger = new google.maps.MarkerImage("https://web.gettaxiusa.com/images/passenger_pin.png",
+        new google.maps.Size(21, 32),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(10, 32));
+
+    var pinColor = "008000"; //green
+    var pinImage = new google.maps.MarkerImage("https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(10, 34));
+    var pinShadow = new google.maps.MarkerImage("https://chart.apis.google.com/chart?chst=d_map_pin_shadow",
+        new google.maps.Size(40, 37),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(12, 35));
+
+    var pinImageDriver = new google.maps.MarkerImage("https://web.gettaxiusa.com/images/car_pin.png",
+        new google.maps.Size(21, 15),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(10, 8));
+
+    function OnSuccess(response) {
+        alert(response);
+        var data1 = JSON.stringify(response.InList);
+        var data2 = JSON.stringify(response.Track);
+
+        status = JSON.parse(JSON.stringify(response.Status));
+        //alert(status);
+        //alert(data2);
+        var data = JSON.parse(data1);
+        alert(data);
+        driverid = data.jobid;
+        driverlocation = JSON.parse(data2);
+
+
+
+        //if (jQuery("#play").hasClass("fas fa-play")) {
+        //    jQuery(".fas fa-play").removeClass("fas fa-play").addClass("fas fa-pause");
+        //}
+        startlimit = Math.round(driverlocation[0].createdon / 1000);
+        upperlimit = Math.round(driverlocation[driverlocation.length - 1].createdon / 1000);
+        incrementedlimit = startlimit;
+
+        stop();
+        clearMarkers();
+        if (data != null || data != "") {
+
+            var Plat = data.pickuplat;
+            var Plng = data.pickuplng;
+            var Dlat = data.droplat;
+            var Dlng = data.droplng;
+
+            var bounds = new google.maps.LatLngBounds();
+            var infowindow = new google.maps.InfoWindow();
+
+
+            var pickmarker = new google.maps.Marker({
+                position: new google.maps.LatLng(Plat, Plng),
+                icon: pinImagePassenger,
+                map: map
+            });
+            markers.push(pickmarker);
+            bounds.extend(new google.maps.LatLng(Plat, Plng));
+
+
+            var dropmarker = new google.maps.Marker({
+                position: new google.maps.LatLng(Dlat, Dlng),
+                map: map,
+                icon: pinImage,
+                shadow: pinShadow
+            });
+
+            markers.push(dropmarker);
+            bounds.extend(new google.maps.LatLng(Dlat, Dlng));
+
+            if (driverlocation.length > 0) {
+                drivermarker = new google.maps.Marker({
+                    icon: pinImageDriver,
+                    position: new google.maps.LatLng(driverlocation[0].lat, driverlocation[0].lng),
+                    map: map,
+                    //animation: google.maps.Animation.DROP
+                });
+
+                driverstep = 0;
+                MoveDriver(driverstep);
+                ProgressBar();
+
+            }
+
+            map.fitBounds(bounds);
+
+            var flightPlanCoordinates = new Array();
+            var lineSymbol = {
+                //path: 'M 0,-1 0,1',
+                strokeOpacity: 1,
+                scale: 4
+            };
+            for (i = 0; i < driverlocation.length; i++) {
+                var point = new google.maps.LatLng(driverlocation[i].lat, driverlocation[i].lng);
+                // console.log(driverlocation[i].time);
+                flightPlanCoordinates.push(point);
+            }
+            flightPath = new google.maps.Polyline({
+                path: flightPlanCoordinates,
+                strokeOpacity: 0,
+                icons: [{
+                    icon: lineSymbol,
+                    offset: '0',
+                    repeat: '20px'
+                }],
+
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+
+            flightPath.setMap(map);
+
+            //$('#mtmnum').val(data[0].mtm_num);
+            $('#start').val(data.starttime);
+            $('#end').val(data.endtime);
+            $('#timetaken').val(data.timetaken);
+            $('#id').val(data.driverid);
+            $('#jobdata').show();
+            $('#bfoot').show();
+            if ($('#play').hasClass('.fa fa-play')) {
+
+                $("#play").toggleClass('.fa fa-pause');
+            }
+
+        } else {
+            // alert("Error");
+            $('#start').val("");
+            $('#end').val("");
+            $('#timetaken').val('');
+            $('#id').val("");
+            $('#jobdata').show();
+
+        }
+
+    }
+    function OnFailure(response) {
+        //alert("Error occured.");
+        TempData["SnackMessage"] = "Invalid JobId";
+    }
+   
+    var timegap;
+    var totaltime;
+    var timerhandle; 
+    var driverstep = 0;
+    var startlimit;
+    var upperlimit;
+    var incrementedlimit;
+    var playspeed = 1000;
+    
+    function MoveDriver() {           //  create a loop function
+        timerhandle = setTimeout(function () {    //  call a 3s setTimeout when the loop is called
+            //console.log(driverlocation[driverstep]);          //  your code here
+            //  increment the counter
+           
+            //$('#actualtimestatus').html(moment(incrementedlimit*1000).format("MM-DD-YYYY h:mm:ss A"));
+            $('#actualtimestatus').html(moment.tz(incrementedlimit * 1000,"America/New_York").format("MM-DD-YYYY h:mm:ss A"));
+            timegap = (incrementedlimit - startlimit);
+
+            totaltime = (upperlimit - startlimit);
+
+            var timeremaining = upperlimit - incrementedlimit;
+            var minutes = Math.floor(timeremaining / 60);
+            var seconds = timeremaining - minutes * 60;
+
+            var tminutes = Math.floor(totaltime / 60);
+            var tseconds = totaltime - tminutes * 60;
+
+            $('#timestatus').html(str_pad_left(minutes, '0', 2) + ':' + str_pad_left(seconds, '0', 2) + '/' + str_pad_left(tminutes, '0', 2) + ':' + str_pad_left(tseconds, '0', 2))
+
+            updateprogress((timegap / totaltime) * 100);
+            //alert(incrementedlimit);
+            //alert(Math.round(driverlocation[driverstep].createdon / 1000));
+            var locationindex = driverlocation.findIndex(function (location) {
+                return Math.round(location.createdon / 1000) == incrementedlimit
+            });
+
+            //console.log(locationindex);
+            //if (incrementedlimit == Math.round(driverlocation[driverstep].createdon / 1000))
+            if (locationindex >= 0) {
+                //alert(driverstep);
+                drivermarker.setPosition(new google.maps.LatLng(driverlocation[locationindex].lat, driverlocation[locationindex].lng));
+                //driverstep++;
+            }//  ..  setTimeout()
+            incrementedlimit++;
+
+            if (incrementedlimit <= upperlimit) {            //  if the counter < 10, call the loop function
+                MoveDriver();             //  ..  again which will trigger another
+            }
+        }, playspeed)
+        //timers.push(timerhandle);
+    }
+
+  
+    function TrackOnSuccess(response) {
+
+        var data = JSON.stringify(response.Track);
+        Track = JSON.parse(data);
+        status = JSON.parse(JSON.stringify(response.Status));
+        alert(Track);
+        if (Track.length != null || Track.length != 0) {
+            var StartLat = Track[0].lat;
+            var StartLng = Track[0].lng;
+
+            var DropLat = Track[Track.length - 1].lat;
+            var DropLng = Track[Track.length - 1].lng;
+
+            stop();
+            clearMarkers();
+
+            var bounds = new google.maps.LatLngBounds();
+            var infowindow = new google.maps.InfoWindow();
+
+
+            var pickmarker = new google.maps.Marker({
+                position: new google.maps.LatLng(StartLat, StartLng),
+                icon: href = "/Content/images/ICONS2.png",
+                label: 'S',
+                map: map
+
+            });
+            markers.push(pickmarker);
+            bounds.extend(new google.maps.LatLng(StartLat, StartLng));
+
+
+            var dropmarker = new google.maps.Marker({
+                position: new google.maps.LatLng(DropLat, DropLng),
+                map: map,
+                icon: href = "/Content/images/ICONS1.png",
+                label: 'D',
+                shadow: pinShadow
+            });
+
+            markers.push(dropmarker);
+            bounds.extend(new google.maps.LatLng(DropLat, DropLng));
+
+            if (Track.length > 0) {
+                drivermarker = new google.maps.Marker({
+                    icon: pinImageDriver,
+                    position: new google.maps.LatLng(Track[0].lat, Track[0].lng),
+                    map: map,
+                    //animation: google.maps.Animation.DROP
+                });
+                driverstep = 0;
+                MoveDriverT(driverstep);
+                ProgressBar();
+            }
+
+            map.fitBounds(bounds);
+
+            var flightPlanCoordinates = new Array();
+            var lineSymbol = {
+                //path: 'M 0,-1 0,1',
+                strokeOpacity: 1,
+                scale: 4
+            };
+            for (i = 0; i < Track.length; i++) {
+                var point = new google.maps.LatLng(Track[i].lat, Track[i].lng);
+                // console.log(driverlocation[i].time);
+                flightPlanCoordinates.push(point);
+            }
+            flightPath = new google.maps.Polyline({
+                path: flightPlanCoordinates,
+                strokeOpacity: 0,
+                icons: [{
+                    icon: lineSymbol,
+                    offset: '0',
+                    repeat: '20px'
+                }],
+
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+
+            flightPath.setMap(map);
+            $('#bfoot').show();
+            //$("#map").load(location.href + " #map>*", "");
+        }
+    }
+    function TrackOnFailure(response) {
+        alert(response);
+    }
+
+    function MoveDriverT(driverstep) {           //  create a loop function
+        timerhandle = setTimeout(function () {    //  call a 3s setTimeout when the loop is called
+            //console.log(driverlocation[driverstep]);          //  your code here
+            //  increment the counter
+            drivermarker.setPosition(new google.maps.LatLng(Track[driverstep].lat, Track[driverstep].lng));
+            drivermarker.setMap(map);
+            driverstep++;
+            updateprogress(driverstep / driverlocation.length * 100);
+            if (driverstep < Track.length) {            //  if the counter < 10, call the loop function
+                MoveDriverT(driverstep);             //  ..  again which will trigger another
+            }                        //  ..  setTimeout()
+        }, playspeed)
+        timers.push(timerhandle);
+    }
+
+    function stop() {
+        clearTimeout(timerhandle);
+    }
+
+    function str_pad_left(string, pad, length) {
+        return (new Array(length + 1).join(pad) + string).slice(-length);
+    }
+
+    function repeat() {
+        updateprogress(0);
+        stop();
+        incrementedlimit = startlimit;
+        if (status == "0") {
+            MoveDriver();
+        } else {
+            MoveDriverT();
+        }
+    }
+
+    function updateprogress(progress) {
+        $('#progressbar').css('width', progress + '%');
+    }
+
+    function ProgressBar() {
+        var outside = document.getElementById('outerPB');
+        var inside = document.getElementById('progressbar');
+
+        outside.addEventListener('click', function (e) {
+            
+            var pct = Math.floor((e.offsetX / outside.offsetWidth) * 100);           
+            var newtimegap = Math.floor(totaltime * pct / 100);
+            var newincrementedlimit = startlimit + newtimegap;
+            updateprogress(pct);
+            stop();
+            incrementedlimit = newincrementedlimit;
+
+            if (status == "0") {
+                MoveDriver();
+            } else {
+                MoveDriverT();
+            }
+
+        }, false);
+    }
+
+    // https://tc39.github.io/ecma262/#sec-array.prototype.findindex
+    if (!Array.prototype.findIndex) {
+        Object.defineProperty(Array.prototype, 'findIndex', {
+            value: function (predicate) {
+                // 1. Let O be ? ToObject(this value).
+                if (this == null) {
+                    throw new TypeError('"this" is null or not defined');
+                }
+
+                var o = Object(this);
+
+                // 2. Let len be ? ToLength(? Get(O, "length")).
+                var len = o.length >>> 0;
+
+                // 3. If IsCallable(predicate) is false, throw a TypeError exception.
+                if (typeof predicate !== 'function') {
+                    throw new TypeError('predicate must be a function');
+                }
+
+                // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
+                var thisArg = arguments[1];
+
+                // 5. Let k be 0.
+                var k = 0;
+
+                // 6. Repeat, while k < len
+                while (k < len) {
+                    // a. Let Pk be ! ToString(k).
+                    // b. Let kValue be ? Get(O, Pk).
+                    // c. Let testResult be ToBoolean(? Call(predicate, T, « kValue, k, O »)).
+                    // d. If testResult is true, return k.
+                    var kValue = o[k];
+                    if (predicate.call(thisArg, kValue, k, o)) {
+                        return k;
+                    }
+                    // e. Increase k by 1.
+                    k++;
+                }
+
+                // 7. Return -1.
+                return -1;
+            },
+            configurable: true,
+            writable: true
+        });
+    }
+
+</script>

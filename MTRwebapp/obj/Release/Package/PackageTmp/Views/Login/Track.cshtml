@@ -1,0 +1,729 @@
+﻿@model MTRwebapp.Models.CustomModels.JobDetail
+@{
+    ViewBag.Title = "Track";
+    //List<MTRwebapp.Models.CustomModels.DriverLocation> Driverlocation = (List<MTRwebapp.Models.CustomModels.DriverLocation>)TempData["Track"];
+
+    var timetaken = Model.timetaken;
+
+}
+@*<link href="/bootstrap/css/style.css" rel="stylesheet" />*@
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<style>
+    .col-1 {
+        flex: 0 0 3.333333%;
+        max-width: 3.333333%;
+    }
+
+    body, h1, h2, h3, h4, h5, h6, p, ul, li {
+        line-height: 1.3em
+    }
+
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 10px 10px;
+            transition: 0.3s;
+            font-size: 17px;
+            width: 100%;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+                background-color: #19a5e2;
+            }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 10px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+
+    /*--------------Progressbar with breakpoints----------------*/
+
+    .progressbar {
+        position: relative;
+        width: 100%;
+        height: 5px;
+        /*max-width: 200px;*/
+        background: whitesmoke;
+        margin-bottom: 8px;
+    }
+
+    .bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0%; /* this would be dynamically set */
+        height: 100%;
+        background: lightblue;
+    }
+
+    .marker-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+    }
+
+        .marker-list .marker {
+            position: absolute;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background-color: #29AAE3;
+            border-radius: 50%;
+            margin-left: 1px;
+        }
+
+    /* The snackbar - position it at the bottom and in the middle of the screen */
+    #snackbar {
+        visibility: hidden; /* Hidden by default. Visible on click */
+        min-width: 250px; /* Set a default minimum width */
+        margin-left: -125px; /* Divide value of min-width by 2 */
+        background-color: #333; /* Black background color */
+        color: #fff; /* White text color */
+        text-align: center; /* Centered text */
+        border-radius: 2px; /* Rounded borders */
+        padding: 16px; /* Padding */
+        position: fixed; /* Sit on top of the screen */
+        z-index: 1; /* Add a z-index if needed */
+        left: 50%; /* Center the snackbar */
+        bottom: 30px; /* 30px from the bottom */
+    }
+
+
+
+        /* Show the snackbar when clicking on a button (class added with JavaScript) */
+        #snackbar.show {
+            visibility: visible; /* Show the snackbar */
+            /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+    However, delay the fade out process for 2.5 seconds */
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+    /* Animations to fade the snackbar in and out */
+    @@-webkit-keyframes fadein {
+        from {
+            bottom: 0;
+            opacity: 0;
+        }
+
+        to {
+            bottom: 30px;
+            opacity: 1;
+        }
+    }
+
+    @@keyframes fadein {
+        from {
+            bottom: 0;
+            opacity: 0;
+        }
+
+        to {
+            bottom: 30px;
+            opacity: 1;
+        }
+    }
+
+    @@-webkit-keyframes fadeout {
+        from {
+            bottom: 30px;
+            opacity: 1;
+        }
+
+        to {
+            bottom: 0;
+            opacity: 0;
+        }
+    }
+
+    @@keyframes fadeout {
+        from {
+            bottom: 30px;
+            opacity: 1;
+        }
+
+        to {
+            bottom: 0;
+            opacity: 0;
+        }
+    }
+    .col-1.f_icon button {
+        width: 40px;
+    }
+
+    .col-1.f_icon {
+        max-width: 50px !important;
+    }
+</style>
+<!-- Menu Header Section Start -->
+<header>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="logo" style="margin-left: 40%;">
+                <a><img src="~/Content/images/logo.png" /></a>
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            @*<div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link">Driver</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link">@Session["Username"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Login/LogOut">LogOut</a>
+                        </li>
+                    </ul>
+                </div>*@
+        </nav>
+    </div>
+</header>
+
+<section>
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12">
+            <section class="map_sec">
+                <div id="map" style="width: 100%; height: 950px; margin-bottom: 2px; "></div>
+            </section>
+            <div class="fixed-bottom" id="bfoot" style="display:none;">
+                @*<div class="progress" style="margin-bottom:10px;height: 0.3rem;" id="outerbar">
+                        <div id="innerbar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; height:100%; overflow: visible;"></div>
+                    </div>*@
+                <div class='progressbar'>
+                    <div class="bar"></div>
+                    <ul class="marker-list">
+                        @*<li class="marker" style='left:10%;'></li>
+                            <li class="marker" style='left:20%;'></li>
+                            <li class="marker" style='left:30%;'></li>
+                            <li class="marker" style='left:40%;'></li>
+                            <li class="marker" style='left:50%;'></li>
+                            <li class="marker" style='left:60%;'></li>
+                            <li class="marker" style='left:70%;'></li>
+                            <li class="marker" style='left:80%;'></li>
+                            <li class="marker" style='left:90%;'></li>*@
+                    </ul>
+                </div>
+
+                <div class="progress" style="margin-bottom:10px;height: 0.5rem;" id="outerPB">
+                    <div id="progressbar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; height:100%; overflow: visible;"></div>
+                </div>
+                @*<div class="container" style="margin-top:10px">*@
+                <div class="row button-container" style="margin-left:20px;">
+                    <div class="col-1 f_icon" id="toggle">
+                        <i class="fa fa-pause" id="play"></i>
+                    </div>
+                    <div class="col-1 f_icon">
+                        <i class="fa fa-repeat" onclick="repeat();"></i>
+                    </div>
+                    <label id="timestatus" style="color:#fff"></label>
+
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#fff" type="button" value="1">1x</button>
+                    </div>
+                    @*<div class="col-1 f_icon">
+                            <button style="background-color:#fff" type="button" value="2">2x</button>
+                        </div>
+                        <div class="col-1 f_icon">
+                            <button style="background-color:#fff" type="button" value="3">3x</button>
+                        </div>
+                        <div class="col-1 f_icon">
+                            <button style="background-color:#fff" type="button" value="4">4x</button>
+                        </div>*@
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#fff" type="button" value="5">5x</button>
+                    </div>
+                    @*<div class="col-1 f_icon">
+                            <button style="background-color:#fff" type="button" value="6">6x</button>
+                        </div>
+                        <div class="col-1 f_icon">
+                            <button style="background-color:#fff" type="button" value="7">7x</button>
+                        </div>
+                        <div class="col-1 f_icon">
+                            <button style="background-color:#fff" type="button" value="8">8x</button>
+                        </div>
+                        <div class="col-1 f_icon">
+                            <button style="background-color:#fff" type="button" value="9">9x</button>
+                        </div>*@
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#29AAE3" type="button" value="10">10x</button>
+                    </div>
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#fff" type="button" value="15">15x</button>
+                    </div>
+                    <div class="col-1 f_icon">
+                        <button style="background-color:#fff" type="button" value="20">20x</button>
+                    </div>
+                    <label id="actualtimestatus" style="color:#fff;margin-left:25px;"></label>
+                </div>
+                @*</div>*@
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="snackbar"></div>
+
+
+<!-- Menu Header Section Start -->
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.slim.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+@*<script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>*@
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+
+<script src="~/Scripts/moment.js"></script>
+<script src="~/Scripts/moment-timezone-with-data-2012-2022.js"></script>
+<script src="~/Scripts/bootstrap-material-datetimepicker.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2MZzFI6Z32E52Sj4fQYcAVHWmc4--g30&libraries=places"></script>
+@*</body>
+    </html>*@
+
+<script>
+    @*$(document).ready(function () {
+        var count = JSON.parse('@Html.Raw(TempData["Track"])');
+        alert(count);
+        for (var i = 0; i < 15; i++) {
+            $("ul").append("<li class='marker' style='left:"+ 10*i +"%;'></li>");
+        }
+    });*@
+
+    function Driverpoints(DriverLoc) {
+
+        var minlimit = Math.round(DriverLoc[0].createdon / 1000);
+        var maxlimit = Math.round(DriverLoc[DriverLoc.length - 1].createdon / 1000);
+        for (var i = 0; i < DriverLoc.length; i++) {
+            var updatedlimit = Math.round(DriverLoc[i].createdon / 1000);
+            var timediff = (updatedlimit - minlimit);
+            var overalltime = (upperlimit - startlimit);
+            var percentage = ((timediff / overalltime) * 100);
+
+            $("ul").append("<li class='marker' style='left:" + percentage + "%;'></li>");
+        }
+    };
+
+
+
+
+    $(document).ready(function () {
+        $('#toggle').bind("click", function () {
+            $("i", this).toggleClass("fa fa-pause fa fa-play");
+
+            if ($("i", this).attr("class") == "fa fa-play") {
+                stop();
+            }
+            else {
+                MoveDriver();
+            }
+        });
+
+        $(".button-container").find("button").click(function () {
+            var fired_button = $(this).val();
+            $(".button-container").find("button").css('background-color', '#fff')
+            $(this).css('background-color', '#19a5e2')
+            playspeed = 1000 / parseInt(fired_button);
+            //alert(playspeed);
+            stop();
+            MoveDriver();
+        });
+    });
+
+
+
+    function Filter(evt, filterName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(filterName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+
+    var map;
+    var marker;
+    var markers = [];
+    var i;
+    var flightPath;
+
+    $(document).ready(function () {
+        myMap();
+    });
+
+    function myMap() {
+        var mapOptions = {
+            center: new google.maps.LatLng(40.7128, -74.0060),
+            zoom: 18,
+            mapTypeId: google.maps.MapTypeId.roadmap,
+            gestureHandling: 'greedy'
+        }
+        map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        map.setOptions({ minZoom: 5, maxZoom: 30 });
+
+
+        driverlocation = JSON.parse('@Html.Raw(TempData["Track"])');
+        if (driverlocation.length == 0) {
+            SnackBar('No location logs found by driver for selected trip.');
+            return;
+        }
+        startlimit = Math.round(driverlocation[0].createdon / 1000);
+        upperlimit = Math.round(driverlocation[driverlocation.length - 1].createdon / 1000);
+        incrementedlimit = startlimit;
+
+        Driverpoints(driverlocation);
+        stop();
+     clearOverlays();
+        var Plat;
+        var Plng;
+        var Dlat;
+        var Dlng;
+        if ('@Model.driverid' != null && '@Model.driverid' != "") {
+
+            Plat = '@Model.pickuplat';
+            Plng = '@Model.pickuplng';
+            Dlat = '@Model.droplat';
+            Dlng = '@Model.droplng';
+
+            var bounds = new google.maps.LatLngBounds();
+            var infowindow = new google.maps.InfoWindow();
+
+
+            var pickmarker = new google.maps.Marker({
+                position: new google.maps.LatLng(Plat, Plng),
+                icon: pinImagePassenger,
+                map: map
+            });
+            markers.push(pickmarker);
+            bounds.extend(new google.maps.LatLng(Plat, Plng));
+
+
+            var dropmarker = new google.maps.Marker({
+                position: new google.maps.LatLng(Dlat, Dlng),
+                map: map,
+                icon: pinImage,
+                shadow: pinShadow
+            });
+
+            markers.push(dropmarker);
+            bounds.extend(new google.maps.LatLng(Dlat, Dlng));
+
+            if (driverlocation.length > 0) {
+                drivermarker = new google.maps.Marker({
+                    icon: pinImageDriver,
+                    position: new google.maps.LatLng(driverlocation[0].lat, driverlocation[0].lng),
+                    map: map,
+                    //animation: google.maps.Animation.DROP
+                });
+                driverstep = 0;
+                MoveDriver();
+                ProgressBar();
+
+            }
+            map.fitBounds(bounds);
+
+            var flightPlanCoordinates = new Array();
+            var lineSymbol = {
+                //path: 'M 0,-1 0,1',
+                strokeOpacity: 1,
+                scale: 4
+            };
+            for (i = 0; i < driverlocation.length; i++) {
+                var point = new google.maps.LatLng(driverlocation[i].lat, driverlocation[i].lng);
+                // console.log(driverlocation[i].time);
+                flightPlanCoordinates.push(point);
+            }
+            flightPath = new google.maps.Polyline({
+                path: flightPlanCoordinates,
+                strokeOpacity: 0,
+                icons: [{
+                    icon: lineSymbol,
+                    offset: '0',
+                    repeat: '20px'
+                }],
+
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+
+            flightPath.setMap(map);
+            $('#bfoot').show();
+
+        }
+        else {
+            Plat = driverlocation[0].lat;
+            Plng = driverlocation[0].lng;
+            Dlat = driverlocation[driverlocation.length - 1].lat;
+            Dlng = driverlocation[driverlocation.length-1].lng;
+            clearMarkers();
+
+            var bounds = new google.maps.LatLngBounds();
+            var infowindow = new google.maps.InfoWindow();
+
+
+            var pickmarker = new google.maps.Marker({
+                position: new google.maps.LatLng(Plat, Plng),
+                icon: href = "/Content/images/ICONS2.png",
+                label: 'S',
+                map: map
+
+            });
+            markers.push(pickmarker);
+            bounds.extend(new google.maps.LatLng(Plat, Plng));
+
+
+            var dropmarker = new google.maps.Marker({
+                position: new google.maps.LatLng(Dlat, Dlng),
+                map: map,
+                icon: href = "/Content/images/ICONS1.png",
+                label: 'D',
+                shadow: pinShadow
+            });
+
+            markers.push(dropmarker);
+            bounds.extend(new google.maps.LatLng(Dlat, Dlng));
+
+            if (driverlocation.length > 0) {
+                drivermarker = new google.maps.Marker({
+                    icon: pinImageDriver,
+                    position: new google.maps.LatLng(driverlocation[0].lat, driverlocation[0].lng),
+                    map: map,
+                    //animation: google.maps.Animation.DROP
+                });
+                driverstep = 0;
+                MoveDriver();
+                ProgressBar();
+            }
+
+            map.fitBounds(bounds);
+
+            var flightPlanCoordinates = new Array();
+            var lineSymbol = {
+                //path: 'M 0,-1 0,1',
+                strokeOpacity: 1,
+                scale: 4
+            };
+            for (i = 0; i < driverlocation.length; i++) {
+                var point = new google.maps.LatLng(driverlocation[i].lat, driverlocation[i].lng);
+                // console.log(driverlocation[i].time);
+                flightPlanCoordinates.push(point);
+            }
+            flightPath = new google.maps.Polyline({
+                path: flightPlanCoordinates,
+                strokeOpacity: 0,
+                icons: [{
+                    icon: lineSymbol,
+                    offset: '0',
+                    repeat: '20px'
+                }],
+
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+
+            flightPath.setMap(map);
+            $('#bfoot').show();
+            //$("#map").load(location.href + " #map>*", "");
+        }
+    }
+
+    function clearOverlays() {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+        markers = [];
+        if (flightPath != null && map != null)
+            flightPath.setMap(null);
+    }
+
+    var drivermarker;
+    var driverlocation;
+    var Track;
+
+    var pinImagePassenger = new google.maps.MarkerImage("https://mytaxiride.com/images/passenger_pin.png",
+        new google.maps.Size(21, 32),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(10, 32));
+
+    var pinColor = "008000"; //green
+    var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(10, 34));
+    var pinShadow = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_shadow",
+        new google.maps.Size(40, 37),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(12, 35));
+
+    var pinImageDriver = new google.maps.MarkerImage("http://mytaxiride.com/images/car_pin.png",
+        new google.maps.Size(21, 15),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(10, 8));
+
+
+    //var timers = [];
+    var timegap;
+    var totaltime;
+    var timerhandle;
+    var driverstep = 0;
+    var startlimit;
+    var upperlimit;
+    var incrementedlimit;
+    var playspeed = 100;
+    function MoveDriver() {           //  create a loop function
+     timerhandle = setTimeout(function () {    //  call a 3s setTimeout when the loop is called
+            //console.log(driverlocation[driverstep]);          //  your code here
+            //  increment the counter
+         $('#actualtimestatus').html(moment.tz(incrementedlimit * 1000, "America/New_York").format("MM-DD-YYYY h:mm:ss A"));
+         timegap = (incrementedlimit - startlimit);
+         totaltime = (upperlimit - startlimit);
+         var timeremaining = upperlimit - incrementedlimit;
+         var minutes = Math.floor(timeremaining / 60);
+         var seconds = timeremaining - minutes * 60;
+
+         var tminutes = Math.floor(totaltime / 60);
+         var tseconds = totaltime - tminutes * 60;
+
+         $('#timestatus').html(str_pad_left(minutes, '0', 2) + ':' + str_pad_left(seconds, '0', 2) + '/' + str_pad_left(tminutes, '0', 2) + ':' + str_pad_left(tseconds, '0', 2))
+
+         updateprogress((timegap / totaltime) * 100);
+         Driverprogress((timegap / totaltime) * 100)
+         //alert(incrementedlimit);
+         //alert(Math.round(driverlocation[driverstep].createdon / 1000));
+         var locationindex = driverlocation.findIndex(function (location) {
+             return Math.round(location.createdon / 1000) == incrementedlimit
+         });
+
+         //console.log(locationindex);
+         //if (incrementedlimit == Math.round(driverlocation[driverstep].createdon / 1000))
+         if (locationindex>=0)
+         {
+             //alert(driverstep);
+             drivermarker.setPosition(new google.maps.LatLng(driverlocation[locationindex].lat, driverlocation[locationindex].lng));
+             //driverstep++;
+         }//  ..  setTimeout()
+         incrementedlimit++;
+
+         if (incrementedlimit <= upperlimit) {            //  if the counter < 10, call the loop function
+             MoveDriver();             //  ..  again which will trigger another
+         }
+     }, playspeed)
+        //timers.push(timerhandle);
+    }
+
+    function stop() {
+        clearTimeout(timerhandle);
+        //for (var i = 0; i < timers.length; i++) {
+        //    clearTimeout(timers[i]);
+        //}
+
+    }
+
+    function str_pad_left(string, pad, length) {
+        return (new Array(length + 1).join(pad) + string).slice(-length);
+    }
+
+    function repeat() {
+        updateprogress(0);
+        stop();
+        incrementedlimit = startlimit;
+        //driverstep = 0;
+        MoveDriver();
+        ////alert(status);
+        ////alert(driverid);
+        //if (status == "0") {
+        //    alert(status);
+        //    $('input[name="Jobid"]').val(driverid);
+        //    //document.getElementById("form2").submit();
+        //    $("#form1").submit();
+        //}
+        //else {
+        //    $("#form2").submit();
+        //}
+
+    }
+
+    function Driverprogress(progress) {
+        $('#innerbar').css('width', progress + '%');
+    }
+
+
+    function updateprogress(progress) {
+        //alert(progress);
+        $('#progressbar').css('width', progress + '%');
+    }
+
+      function ProgressBar() {
+        var outside = document.getElementById('outerPB');
+        var inside = document.getElementById('progressbar');
+
+        outside.addEventListener('click', function (e) {
+            //inside.style.width = e.offsetX + "px";
+            // calculate the %
+            var pct = Math.floor((e.offsetX / outside.offsetWidth) * 100);
+            //console.log(pct);
+            //var progress = Math.floor(pct / 100 * driverlocation.length);
+            //stop();
+            //MoveDriver();
+            //inside.innerHTML = pct + " %";
+
+            var newtimegap = Math.floor(totaltime * pct / 100);
+            var newincrementedlimit = startlimit + newtimegap;
+            updateprogress(pct);
+            stop();
+            incrementedlimit = newincrementedlimit;
+            MoveDriver();
+
+        }, false);
+    }
+
+    function SnackBar(message) {
+        // Get the snackbar DIV
+        var x = document.getElementById("snackbar");
+        $(x).html(message);
+        // Add the "show" class to DIV
+        x.className = "show";
+
+        // After 3 seconds, remove the show class from DIV
+        setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+    }
+</script>
